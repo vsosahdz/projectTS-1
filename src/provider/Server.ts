@@ -1,6 +1,7 @@
 //const express = require('express'); //JS
 import express from 'express'; //TS
 import AbstractController from '../controllers/AbstractController';
+import db from '../models';
 
 class Server{
     //Atributos de instancia
@@ -13,7 +14,9 @@ class Server{
         this.app = express();
         this.port = appInit.port;
         this.env = appInit.env;
-        
+        this.loadmiddlewares(appInit.middlewares);
+        this.loadRoutes(appInit.controllers);
+        this.connectDB();        
         
     }
 
@@ -23,4 +26,22 @@ class Server{
         })
     }
 
+    private loadmiddlewares(middlewares:any[]):void{
+        middlewares.forEach((middleware:any)=>{
+            this.app.use(middleware);
+        })
+    }
+
+    private async connectDB(){
+        await db.sequelize.sync({force:false});
+    }
+
+    public init(){
+        this.app.listen(this.port,()=>{
+            console.log(`Server running on port ${this.port}`);
+        })       
+    }
+
 }
+
+export default Server;
