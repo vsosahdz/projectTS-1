@@ -1,5 +1,5 @@
 //const express = require('express'); //JS
-import express from 'express'; //TS
+import express, {Request, Response} from 'express'; //TS
 import AbstractController from '../controllers/AbstractController';
 import db from '../models';
 
@@ -21,6 +21,10 @@ class Server{
     }
 
     private loadRoutes(controllers:AbstractController[]):void{
+        this.app.get('/',(req:Request,res:Response)=>{
+            res.status(200).send('Hello world');
+        })
+        
         controllers.forEach((controller:AbstractController )=> {
             this.app.use(`/${controller.prefix}`,controller.router);
         })

@@ -18,8 +18,11 @@ class AgenteController extends AbstractController{
     protected initRoutes(): void {
         this.router.get('/testagent',this.getTestAgent.bind(this));
         this.router.get('/consultarAgentes',this.getConsultarAgentes.bind(this));
-        this.router.post('/crearAgente',);
+        this.router.post('/crearAgente',this.postCrearAgente.bind(this));
+        
     }
+
+    //10.48.120.198
 
     private async postCrearAgente(req: Request,res: Response){
         try{
@@ -34,10 +37,12 @@ class AgenteController extends AbstractController{
         }
     }
 
-    private getConsultarAgentes(req: Request,res: Response){
+    private async getConsultarAgentes(req: Request,res: Response){
         try{
             console.log("Consultar agentes");
-            res.status(200).send("<h1>Consultar agentes</h1>")
+            let agentes = await db["Agente"].findAll(); //SELECT * FROM Agente;
+            res.status(200).json(agentes);
+
         }catch(error:any){
             console.log(error);
             res.status(500).send('Internal server error'+error);
