@@ -1,6 +1,7 @@
 import { Request,Response } from "express";
 import AbstractController from "./AbstractController";
 import db from "../models";
+import DepartamentoModel from "../modelsNOSQL/departamentoNOSQL";
 
 
 class AgenteController extends AbstractController{
@@ -19,9 +20,33 @@ class AgenteController extends AbstractController{
         this.router.get('/testagent',this.getTestAgent.bind(this));
         this.router.get('/consultarAgentes',this.getConsultarAgentes.bind(this));
         this.router.post('/crearAgente',this.postCrearAgente.bind(this));
+        this.router.post('/crearDepartamento',this.postCrearDepartamento.bind(this));
+        this.router.get('/consultaDepto',this.getConsultaDepto.bind(this));
         
     }
+    private async getConsultaDepto(req: Request,res: Response){
+        try{
+            const deptos = await DepartamentoModel.scan().exec().promise();
+            console.log(deptos);
+            res.status(200).send(deptos[0].Items);
+        }catch(err){
+            console.log(err)
+            res.status(500).send('Internal server error'+err);
+        }
+    }
+    
 
+    private async postCrearDepartamento(req: Request,res: Response){
+        try{
+            console.log(req.body);
+            await DepartamentoModel.create(req.body);
+            console.log("Departamento creado");
+            res.status(200).send("<h1>Departamento creado</h1>");
+        }catch(err){
+            console.log(err);
+            res.status(500).send('Internal server error'+err);
+        }
+    }
     //10.48.120.198
 
     private async postCrearAgente(req: Request,res: Response){
