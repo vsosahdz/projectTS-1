@@ -1,6 +1,6 @@
 module.exports = {
     apps:[{
-        name:'backend',
+        name: "backend",
         script: "dist/index.js",
         node_args: "-r dotenv/config"
     }]
